@@ -1,0 +1,25 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - GIT_NAME: "Richard Chien"
+    - GIT_EMAIL: richardchienthebest@gmail.com
+    - DOCKER_USER: richardchien
+    - DOCKER_EMAIL: richardchienthebest@gmail.com
+    - DOCKER_REPO: richardchien/cqhttp
+
+before_install:
+  - nvm install 4
+
+install:
+  - pip install .
+  - pip install -r test-requirements.txt
+
+script:
+  - docker build -f Dockerfile -t $DOCKER_REPO:latest .
+
+after_success:
+  - chmod +x after_success.sh && ./after_success.sh
