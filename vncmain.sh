@@ -5,15 +5,6 @@ export USER_PASSWD=''
 
 export TERM=linux
 
-function is_first_run() {
-    flag=`cat /home/user/coolq/io.github.richardchien.coolqhttpapi.flag`
-    if [ "$flag" == '' ]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
 function is_running() {
     process=`ps aux | grep 'CQ.\.exe'`
     if [ "$process" == '' ]; then
@@ -49,12 +40,13 @@ function check_http_api() {
     if [ "$port" == '' ]; then
         port=5700
     fi
+    first_run=1
     fail_count=0
     while true; do
         ret=$(request)
         echo 'curl result' $ret
         if [ "$ret" == '' ]; then
-            if [ $(is_first_run) == 0 ]; then
+            if [ "$first_run" == 0 ]; then
                 # 请求失败，HTTP API 未启动或已经挂了
                 # 在运行中有可能因为快速重启导致 HTTP API 暂时失联
                 # 但由于 join 可能未跳出，我们无法知道是为什么，因此允许在运行中失败若干次
@@ -71,14 +63,16 @@ function check_http_api() {
         else
             # 请求成功，HTTP API 正常运行
             fail_count=0
-            echo 1 > /home/user/coolq/io.github.richardchien.coolqhttpapi.flag
+            first_run=0
         fi
         # 每 3 秒请求一次
         sleep 3
     done
 }
 
-check_http_api &
+if [ "$AUTO_EXIT" == 1 ]; then
+    check_http_api &
+fi
 
 while true; do
     # 检查进程是否存在
