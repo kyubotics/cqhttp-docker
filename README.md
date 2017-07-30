@@ -22,7 +22,7 @@ $ docker run -p 9000:9000 -p 5700:5700 richardchien/cqhttp
 在创建 docker 容器时，使用以下环境变量，可以调整容器行为。
 
 - `VNC_PASSWD`：设置 VNC 密码。oott123/novnc 镜像说该密码不能超过 8 个字符，但实测超过 8 个字符也没有问题。
-- `COOLQ_ACCOUNT`：设置要登录酷 Q 的 QQ 号。在第一次手动登录后，你可以勾选「快速登录」功能以启用自动登录。**此项建议最好设置，因为这关系到容器启动时的自动登录和酷 Q 出错时的自动重启。**
+- `COOLQ_ACCOUNT`：设置要登录酷 Q 的 QQ 号。在第一次手动登录后，你可以勾选「快速登录」功能以启用自动登录。**此项建议最好设置，因为这关系到容器启动时的自动登录和酷 Q 出错时的自动重启。另外，如果设置此项，需要同时使用 docker 的卷映射功能将容器内的 `/home/user/coolq` 目录持久化（见下面的「注意事项」），否则每次重启容器都会重新下载酷 Q 程序，「快速登录」不会有效果。**
 - `COOLQ_URL`：设置下载酷 Q 的地址，默认为 `http://dlsec.cqp.me/cqa-tuling`，即酷 Q Air 图灵版。
 - `AUTO_EXIT`：设置为 `1` 会在 HTTP API 插件不可用时退出容器。开启此项后，容器运行过程中，如果直接在 VNC 中重启酷 Q 且恰好酷 Q 需要更新（需较长时间），或者没有设置快速登录的情况下重启酷 Q（再次登录时输入密码需要较长时间），则将会被误判为 HTTP API 不可用，然后退出，所以请视情况开启。
 - `CQHTTP_VERSION`：指定要安装的 HTTP API 版本，例如 `2.1.0`（注意只支持选择 2.1.0 或更新版本），如果不指定则默认使用最新版本。
@@ -44,3 +44,5 @@ $ docker run -ti --rm --name cqhttp-test \
 ## 一些注意事项
 
 本镜像会在运行中检测酷 Q 及 HTTP API 的运行状态，如果酷 Q 由于某种原因异常退出，会自动尝试重启酷 Q；当开启了 `AUTO_EXIT` 之后，而如果 HTTP API 插件连续 5 次无法响应，**则会退出容器**，此时建议在启动命令中配置 `--restart=always` 参数。
+
+对于通常使用情况而言，建议将容器的 `/home/user/coolq` 目录映射到持久化的卷或宿主目录，否则每次重启容器都会重新下载酷 Q 和 HTTP API 插件，已登录的账号也会丢失。卷的挂载方法，见 [https://yeasy.gitbooks.io/docker_practice/content/data_management/volume.html](https://yeasy.gitbooks.io/docker_practice/content/data_management/volume.html)。
