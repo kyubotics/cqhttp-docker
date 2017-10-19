@@ -1,5 +1,7 @@
 # CQHttp in Docker
 
+**此镜像只适用于插件 2.x 版本，现已移至 `richardchien/cqhttp:legacy`。**
+
 CQHttp in Docker 是基于酷 Q 官方的 [CoolQ/docker-wine-coolq](https://github.com/CoolQ/docker-wine-coolq) 镜像稍加修改而来，在启动时自动安装和启用指定版本或最新版本的 CoolQ HTTP API 插件，并从环境变量读取插件的配置。从而可以一键通过 Wine 在 docker 容器中运行酷Q Air 或 Pro 和 HTTP API 插件。
 
 关于 CoolQ HTTP API 插件，见 [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api)。
@@ -7,8 +9,8 @@ CQHttp in Docker 是基于酷 Q 官方的 [CoolQ/docker-wine-coolq](https://gith
 ## 下载使用
 
 ```sh
-$ docker pull richardchien/cqhttp
-$ docker run -p 9000:9000 -p 5700:5700 richardchien/cqhttp
+$ docker pull richardchien/cqhttp:legacy
+$ docker run -p 9000:9000 -p 5700:5700 richardchien/cqhttp:legacy
 ```
 
 即可运行一个装有 HTTP API 的 CoolQ 实例。运行后，访问 `http://你的IP:9000` 可以打开一个 VNC 页面，输入 `MAX8chars` 作为密码后即可看到一个 酷 Q Air 已经启动。
@@ -38,7 +40,7 @@ $ docker run -ti --rm --name cqhttp-test \
              -e CQHTTP_HOST=0.0.0.0 \
              -e CQHTTP_POST_URL=http://example.com:8080 \
              -e CQHTTP_SERVE_DATA_FILE=yes \
-             richardchien/cqhttp
+             richardchien/cqhttp:legacy
 ```
 
 ## 一些注意事项
