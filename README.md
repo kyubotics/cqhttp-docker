@@ -1,4 +1,4 @@
-# CQHTTP in Docker
+# CQHttp in Docker
 
 **此镜像只适用于插件 2.x 版本，现已移至 `richardchien/cqhttp:legacy`。**
 
